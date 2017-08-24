@@ -11,8 +11,10 @@ vagrantで簡単にhls配信できる環境を構築する。
 ## Usage
 
 ## Install
+```
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
+```
 
 ## Licence
 
