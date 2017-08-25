@@ -85,16 +85,16 @@ $setup = <<SCRIPT
   yum install -y docker
   systemctl enable docker
   systemctl start docker
-  curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" >  ~/docker-compose
-  sudo mkdir -p /opt/bin
-  sudo mv ~/docker-compose /opt/bin/docker-compose
-  sudo chown root:root /opt/bin/docker-compose
-  sudo chmod +x /opt/bin/docker-compose
+  curl -L https://github.com/docker/compose/releases/download/1.6.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  chmod +x /usr/local/bin/docker-compose
+  #sudo docker-compose -f /docker-composes/docker-compose.yml stop
+  #sudo docker-compose -f /docker-composes/docker-compose.yml rm -f
+  sudo /usr/local/bin/docker-compose -f /docker-composes/docker-compose.yml up -d
 SCRIPT
 
 # VM再起動時にコマンド実行する場合
 $start = <<SCRIPT
-  # docker-compose -f /docker-composes/docker-compose.yml stop
-  # docker-compose -f /docker-composes/docker-compose.yml rm -f
-  /opt/bin/docker-compose -f /docker-composes/docker-compose.yml up -d
+  #docker-compose -f /docker-composes/docker-compose.yml stop
+  #docker-compose -f /docker-composes/docker-compose.yml rm -f
+  #docker-compose -f /docker-composes/docker-compose.yml up -d
 SCRIPT
