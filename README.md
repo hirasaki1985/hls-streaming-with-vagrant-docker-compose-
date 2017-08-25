@@ -1,10 +1,7 @@
 vagrant-hls-streaming(with docker-compose)
 ====
 
-
-
-***DEMO:***
-
+vagrantで簡単にhls配信できる環境を構築する。
 
 ## Requirement
 * Virtual Box
@@ -14,8 +11,10 @@ vagrant-hls-streaming(with docker-compose)
 ## Usage
 
 ## Install
+```
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
+```
 
 ## Licence
 
