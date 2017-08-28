@@ -79,24 +79,17 @@ end
 
 # 初回・reload時ｍに実行される
 $setup = <<SCRIPT
-  #test -f /etc/bootstrapped && exit
-  #sudo apt-get update -y
-  #sudo apt-get install -y apt-transport-https ca-certificates
-  #sudo apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-  #sudo echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" > /etc/apt/sources.list.d/docker.list
-  #sudo apt-get update -y
-  #sudo apt-get purge lxc-docker
-  #sudo apt-cache policy docker-engine
-  #sudo apt-get install -y docker-engine
-  
+  ## install docker
   sudo apt-get remove docker docker-engine
   sudo apt-get update -y
   sudo apt-get -y install wget linux-image-extra-$(uname -r) linux-image-extra-virtual
   wget -qO- https://get.docker.com/ | sh
   sudo usermod -aG docker vagrant
   
+  ## restart docker
   sudo service docker restart
   
+  ## install docker-compose
   sudo curl -s -S -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
   sudo date > /etc/bootstrapped
@@ -104,30 +97,6 @@ $setup = <<SCRIPT
   ## create docker network
   sudo docker network create --driver bridge common_link
 SCRIPT
-
-# $setup = <<SCRIPT
-#   ## update packages
-#   apt-get update -y
-#   apt-get install -y linux-image-generic-lts-raring linux-headers-generic-lts-raring
-#   apt-get install -y curl
-#   curl -s http://get.docker.io/ubuntu/ | sudo sh
-#   
-#   ## start docker
-#   sudo service docker.service start
-#   sudo systemctl enable docker
-#   
-#   apt-get install -y lsof wget nc
-#   
-#   ## docker-compose install
-#   sudo curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" >  ~/docker-compose
-#   sudo mkdir -p /opt/bin
-#   sudo mv ~/docker-compose /usr/local/bin
-#   sudo chown root:root /usr/local/bin
-#   sudo chmod +x /usr/local/bin
-#   
-#   ## create docker network
-#   sudo docker network create --driver bridge common_link
-# SCRIPT
 
 # VM再起動時にコマンド実行する場合
 $start = <<SCRIPT
