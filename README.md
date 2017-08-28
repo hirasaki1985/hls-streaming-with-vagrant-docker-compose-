@@ -1,10 +1,11 @@
-vagrant-hls-streaming(with docker-compose)
+reverse_proxy template(with vagrant + docker-compose + jwilder/nginx-proxy)
 ====
 
-vagrantで簡単にhls配信できる環境を構築する。
+vagrant + docker-compose + nginx-proxyで環境構築をする際のテンプレート
 
 ## Requirement
 * Virtual Box
+* vagrant
 * docker
 * docker-compose
 
@@ -14,11 +15,14 @@ vagrantで簡単にhls配信できる環境を構築する。
 ```
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
+$ vi /etc/hosts
+  192.168.30.10 php-dev.com
+$ http://php-dev.com
 ```
 
 ## Licence
 
-[MIT](https://github.com/hirasaki1985/vagrant-hls-streaming(/blob/master/LICENSE)
+[MIT](https://github.com/hirasaki1985/reverse_proxy/raw/master/LICENSE)
 
 ## Author
 
