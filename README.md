@@ -13,6 +13,8 @@ vagrant + docker-compose + nginx-proxyで環境構築をする際のテンプレ
 
 ## Install
 ```
+$ https://github.com/hirasaki1985/reverse_proxy.git
+$ cd reverse_proxy
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
 $ vi /etc/hosts
