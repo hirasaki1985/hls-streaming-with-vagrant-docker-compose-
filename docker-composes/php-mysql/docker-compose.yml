@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  web:
+    build: ./php
+    container_name: php-web-server
+    environment:
+      - VIRTUAL_HOST=php-dev.com
+    volumes:
+      - ./html:/var/www/html
+    restart: always
+
+networks:
+  default:
+    external:
+      name: common_link
+
