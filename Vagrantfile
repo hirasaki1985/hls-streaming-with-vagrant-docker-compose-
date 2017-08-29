@@ -29,7 +29,6 @@ Vagrant.configure("2") do |config|
   #config.vm.network "forwarded_port", guest: 22, host: 22
   config.vm.network "forwarded_port", guest: 80, host: 80
   config.vm.network "forwarded_port", guest: 443, host: 443
-  config.vm.network "forwarded_port", guest: 1935, host: 1935
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
@@ -56,7 +55,7 @@ Vagrant.configure("2") do |config|
     # Customize the amount of memory on the VM:
     vb.memory = "2048"
     vb.cpus = 2
-    vb.name = "hls-streaming-server"
+    vb.name = "webserver-dev"
   end
   #
   # View the documentation for the provider you are using for more
@@ -85,17 +84,19 @@ $setup = <<SCRIPT
   sudo apt-get -y install wget linux-image-extra-$(uname -r) linux-image-extra-virtual
   wget -qO- https://get.docker.com/ | sh
   sudo usermod -aG docker vagrant
-  
+
   ## restart docker
   sudo service docker restart
-  
+
   ## install docker-compose
   sudo curl -s -S -L https://github.com/docker/compose/releases/download/1.8.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
   sudo chmod +x /usr/local/bin/docker-compose
   sudo date > /etc/bootstrapped
-  
+
   ## create docker network
-  sudo docker network create --driver bridge common_link
+  #sudo docker network create --driver bridge web-project01_network
+  #sudo docker network create --driver bridge web-project02_network
+  sudo docker network create --driver bridge web-project_network
 SCRIPT
 
 # VM再起動時にコマンド実行する場合
@@ -105,9 +106,14 @@ $start = <<SCRIPT
   sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml stop 2>&1
   sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml rm -f 2>&1
   sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml up -d
-  
-  ## up php-mysql
-  sudo /usr/local/bin/docker-compose -f /docker-composes/php-mysql/docker-compose.yml stop 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/php-mysql/docker-compose.yml rm -f 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/php-mysql/docker-compose.yml up -d
+
+  ## up web-project01
+  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project01/docker-compose.yml stop 2>&1
+  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project01/docker-compose.yml rm -f 2>&1
+  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project01/docker-compose.yml up -d
+
+  ## up web-project02
+  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project02/docker-compose.yml stop 2>&1
+  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project02/docker-compose.yml rm -f 2>&1
+  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project02/docker-compose.yml up -d
 SCRIPT

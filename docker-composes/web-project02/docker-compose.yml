@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  web02:
+    build: ./php
+    container_name: web-project02
+    environment:
+      - VIRTUAL_HOST=web-project02.com
+    volumes:
+      - ./html:/var/www/html
+    restart: always
+
+networks:
+  default:
+    external:
+      #name: web-project02_network
+      name: web-project_network

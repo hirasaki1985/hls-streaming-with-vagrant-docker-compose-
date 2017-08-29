@@ -6,20 +6,22 @@ vagrant + docker-compose + nginx-proxyで環境構築をする際のテンプレ
 ## Requirement
 * Virtual Box
 * vagrant
-* docker
-* docker-compose
+* /etc/hosts
 
 ## Usage
 
 ## Install
 ```
-$ https://github.com/hirasaki1985/reverse_proxy.git
+$ git clone https://github.com/hirasaki1985/reverse_proxy.git
 $ cd reverse_proxy
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
 $ vi /etc/hosts
-  192.168.30.10 php-dev.com
-$ http://php-dev.com
+  192.168.30.10 web-project01
+  192.168.30.10 web-project02
+$ access your browser.
+  http://web-project01.com
+  http://web-project02.com
 ```
 
 ## Licence
@@ -29,4 +31,3 @@ $ http://php-dev.com
 ## Author
 
 [m.hirasaki](https://github.com/hirasaki1985)
-
