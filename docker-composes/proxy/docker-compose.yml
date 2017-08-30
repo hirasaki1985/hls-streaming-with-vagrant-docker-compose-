@@ -15,7 +15,7 @@ services:
 networks:
   default:
     external:
-      name: web-project_network
+      name: common_link
   #web01:
   #  external:
   #    name: web-project01_network

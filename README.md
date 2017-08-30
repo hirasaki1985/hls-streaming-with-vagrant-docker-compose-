@@ -17,8 +17,8 @@ $ cd reverse_proxy
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
 $ vi /etc/hosts
-  192.168.30.10 web-project01
-  192.168.30.10 web-project02
+  192.168.33.10 web-project01.com
+  192.168.33.10 web-project02.com
 $ access your browser.
   http://web-project01.com
   http://web-project02.com

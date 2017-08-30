@@ -96,7 +96,7 @@ $setup = <<SCRIPT
   ## create docker network
   #sudo docker network create --driver bridge web-project01_network
   #sudo docker network create --driver bridge web-project02_network
-  sudo docker network create --driver bridge web-project_network
+  sudo docker network create --driver bridge common_link
 SCRIPT
 
 # VM再起動時にコマンド実行する場合
