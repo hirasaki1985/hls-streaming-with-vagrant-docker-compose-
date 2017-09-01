@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+  streaming-server:
+    build: ./nginx
+    container_name: nginx-streaming-server
+    ports:
+      - 1935:1935
+    restart: always
+
+  web-server:
+    image: nginx
+    container_name: nginx-web-server
+    environment:
+      - VIRTUAL_HOST=web-server.com
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+    restart: always
+
+networks:
+  default:
+    external:
+      name: common_link
+

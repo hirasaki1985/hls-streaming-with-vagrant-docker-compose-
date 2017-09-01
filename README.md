@@ -7,21 +7,29 @@ vagrant + docker-compose + nginx-proxyで環境構築をする際のテンプレ
 * Virtual Box
 * vagrant
 * /etc/hosts
+* OBS
 
 ## Usage
 
 ## Install
 ```
 $ git clone https://github.com/hirasaki1985/reverse_proxy.git
-$ cd reverse_proxy
+$ git checkout -b hls-streaming origin/hls-streaming
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
 $ vi /etc/hosts
-  192.168.33.10 web-project01.com
-  192.168.33.10 web-project02.com
+  192.168.33.10 web-server.com
+  192.168.33.10 streaming-server.com
+$ OBS setting
+  * URL : rtmp://streaming-server.com:1935/hls
+  * stream key : key
 $ access your browser.
-  http://web-project01.com
-  http://web-project02.com
+  http://web-server.com/
+```
+
+## 参考
+```
+https://github.com/brocaar/nginx-rtmp-dockerfile
 ```
 
 ## Licence

@@ -29,7 +29,8 @@ Vagrant.configure("2") do |config|
   #config.vm.network "forwarded_port", guest: 22, host: 22
   config.vm.network "forwarded_port", guest: 80, host: 80
   config.vm.network "forwarded_port", guest: 443, host: 443
-
+  config.vm.network "forwarded_port", guest: 1935, host: 1935
+  
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   config.vm.network "private_network", ip: "192.168.33.10"
@@ -107,13 +108,8 @@ $start = <<SCRIPT
   sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml rm -f 2>&1
   sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml up -d
 
-  ## up web-project01
-  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project01/docker-compose.yml stop 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project01/docker-compose.yml rm -f 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project01/docker-compose.yml up -d
-
-  ## up web-project02
-  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project02/docker-compose.yml stop 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project02/docker-compose.yml rm -f 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/web-project02/docker-compose.yml up -d
+  ## up streaming-server
+  sudo /usr/local/bin/docker-compose -f /docker-composes/streaming-server/docker-compose.yml stop 2>&1
+  sudo /usr/local/bin/docker-compose -f /docker-composes/streaming-server/docker-compose.yml rm -f 2>&1
+  sudo /usr/local/bin/docker-compose -f /docker-composes/streaming-server/docker-compose.yml up -d
 SCRIPT
