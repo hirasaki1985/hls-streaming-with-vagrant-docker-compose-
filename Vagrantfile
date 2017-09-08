@@ -102,14 +102,13 @@ SCRIPT
 
 # VM再起動時にコマンド実行する場合
 $start = <<SCRIPT
-  ## up nginx-proxy
-  # sudo docker run -d -p 80:80 -e DEFAULT_HOST=foo.bar.com -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy
-  sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml stop 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml rm -f 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/proxy/docker-compose.yml up -d
+  find /docker-composes/ -name 'docker-compose.yml' | while read line; do \
+    sudo /usr/local/bin/docker-compose -f $line stop 2>&1; \
+  done
 
-  ## up streaming-server
-  sudo /usr/local/bin/docker-compose -f /docker-composes/streaming-server/docker-compose.yml stop 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/streaming-server/docker-compose.yml rm -f 2>&1
-  sudo /usr/local/bin/docker-compose -f /docker-composes/streaming-server/docker-compose.yml up -d
+  find /docker-composes/ -name 'docker-compose.yml' | while read line; do \
+    sudo /usr/local/bin/docker-compose -f $line build --no-cache; \
+    sudo /usr/local/bin/docker-compose -f $line up -d; \
+  done
+
 SCRIPT

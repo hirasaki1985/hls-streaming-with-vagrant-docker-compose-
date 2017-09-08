@@ -18,8 +18,8 @@ $ git checkout -b hls-streaming origin/hls-streaming
 $ vagrant plugin install vagrant-vbguest
 $ vagrant up
 $ vi /etc/hosts
-  192.168.33.10 web-server.com
-  192.168.33.10 streaming-server.com
+  192.168.33.10 hls-streaming-server.com
+  192.168.33.10 hls-web-server.com
 $ OBS setting
   * URL : rtmp://streaming-server.com:1935/hls
   * stream key : key

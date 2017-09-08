@@ -2,19 +2,21 @@ version: '2'
 
 services:
   streaming-server:
-    build: ./nginx
-    container_name: nginx-streaming-server
+    build: ./streaming-server/
+    container_name: hls-streaming-server
+    environment:
+      - VIRTUAL_HOST=hls-streaming-server.com
     ports:
       - 1935:1935
     restart: always
 
   web-server:
-    image: nginx
-    container_name: nginx-web-server
+    build: ./web-server/
+    container_name: hls-web-server
     environment:
-      - VIRTUAL_HOST=web-server.com
+      - VIRTUAL_HOST=hls-web-server.com
     volumes:
-      - ./nginx/html:/usr/share/nginx/html
+      - ./web-server/html:/var/www/html
     restart: always
 
 networks:
