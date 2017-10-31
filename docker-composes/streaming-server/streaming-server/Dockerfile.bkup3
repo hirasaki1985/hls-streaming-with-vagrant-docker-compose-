@@ -1,0 +1,39 @@
+#FROM centos:7
+FROM buildpack-deps:jessie
+MAINTAINER m.hirasaki
+
+ENV NGINX_VERSION 1.12.1
+
+RUN yum update -y
+RUN yum install -y epel-release
+RUN yum groupinstall -y "Development Tools"
+RUN yum -y install pcre-devel zlib-devel openssl-devel unzip wget
+WORKDIR /usr/local/src/
+RUN wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
+RUN tar xvzf nginx-${NGINX_VERSION}.tar.gz
+RUN wget https://github.com/arut/nginx-rtmp-module/archive/master.zip
+RUN unzip master.zip
+WORKDIR nginx-${NGINX_VERSION}
+RUN ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module-master
+RUN make
+RUN make install
+
+#RUN addgroup -S nginx
+#RUN adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx
+
+RUN chmod +x /usr/local/nginx/sbin/nginx
+RUN mkdir -p /home/www/live/hls
+RUN chmod -R 755 /home/www/live/hls
+#RUN chown -R nginx:nginx /home/www/live/hls
+
+COPY ./nginx.conf /usr/local/nginx/conf/nginx.conf
+
+EXPOSE 80 1935
+
+#ENTRYPOINT ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
+CMD ["/usr/local/nginx/sbin/nginx", "-g", "daemon off;"]
+
+## buildpack-deps 各言語を動かすために必要な基本的な依存関係等がインストールされている
+# http://deeeet.com/writing/2014/09/25/dockerhub-official-language-stacks/
+#
+

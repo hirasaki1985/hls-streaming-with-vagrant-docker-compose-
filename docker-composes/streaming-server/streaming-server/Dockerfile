@@ -1,50 +1,58 @@
-FROM ubuntu:trusty
+# FROM buildpack-deps:jessie
+FROM debian:stretch-slim
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV PATH $PATH:/usr/local/nginx/sbin
+# Versions of Nginx and nginx-rtmp-module to use
+ENV NGINX_VERSION nginx-1.11.3
+ENV NGINX_RTMP_MODULE_VERSION 1.1.9
 
-EXPOSE 1935
-EXPOSE 80
-
-# create directories
-RUN mkdir /src /config /logs /data /static
-
-# update and upgrade packages
+# Install dependencies
 RUN apt-get update -y && \
-  apt-get upgrade -y && \
-  apt-get clean && \
-  apt-get install -y --no-install-recommends build-essential \
-  wget software-properties-common && \
-# ffmpeg
-  add-apt-repository ppa:mc3man/trusty-media && \
-  apt-get update && \
-  apt-get install -y --no-install-recommends ffmpeg && \
-# nginx dependencies
-  apt-get install -y --no-install-recommends libpcre3-dev \
-  zlib1g-dev libssl-dev wget && \
-  rm -rf /var/lib/apt/lists/*
+    apt-get install -y ca-certificates openssl libssl-dev wget make && \
+    rm -rf /var/lib/apt/lists/*
 
-# get nginx source
-WORKDIR /src
-RUN wget http://nginx.org/download/nginx-1.7.5.tar.gz && \
-  tar zxf nginx-1.7.5.tar.gz && \
-  rm nginx-1.7.5.tar.gz && \
-# get nginx-rtmp module
-  wget https://github.com/arut/nginx-rtmp-module/archive/v1.1.6.tar.gz && \
-  tar zxf v1.1.6.tar.gz && \
-  rm v1.1.6.tar.gz
+# Download and decompress Nginx
+RUN mkdir -p /tmp/build/nginx && \
+    cd /tmp/build/nginx && \
+    wget -O ${NGINX_VERSION}.tar.gz https://nginx.org/download/${NGINX_VERSION}.tar.gz && \
+    tar -zxf ${NGINX_VERSION}.tar.gz
 
-# compile nginx
-WORKDIR /src/nginx-1.7.5
-RUN ./configure --add-module=/src/nginx-rtmp-module-1.1.6 \
-  --conf-path=/config/nginx.conf \
-  --error-log-path=/logs/error.log \
-  --http-log-path=/logs/access.log && \
-  make && \
-  make install
+# Download and decompress RTMP module
+RUN mkdir -p /tmp/build/nginx-rtmp-module && \
+    cd /tmp/build/nginx-rtmp-module && \
+    wget -O nginx-rtmp-module-${NGINX_RTMP_MODULE_VERSION}.tar.gz https://github.com/arut/nginx-rtmp-module/archive/v${NGINX_RTMP_MODULE_VERSION}.tar.gz && \
+    tar -zxf nginx-rtmp-module-${NGINX_RTMP_MODULE_VERSION}.tar.gz && \
+    cd nginx-rtmp-module-${NGINX_RTMP_MODULE_VERSION}
 
-ADD nginx.conf /config/nginx.conf
-ADD static /static
+# Build and install Nginx
+# The default puts everything under /usr/local/nginx, so it's needed to change
+# it explicitly. Not just for order but to have it in the PATH
+RUN cd /tmp/build/nginx/${NGINX_VERSION} && \
+    ./configure \
+        --sbin-path=/usr/local/sbin/nginx \
+        --conf-path=/etc/nginx/nginx.conf \
+        --error-log-path=/var/log/nginx/error.log \
+        --pid-path=/var/run/nginx/nginx.pid \
+        --lock-path=/var/lock/nginx/nginx.lock \
+        --http-log-path=/var/log/nginx/access.log \
+        --http-client-body-temp-path=/tmp/nginx-client-body \
+        --with-http_ssl_module \
+        --with-threads \
+        --with-ipv6 \
+        --add-module=/tmp/build/nginx-rtmp-module/nginx-rtmp-module-${NGINX_RTMP_MODULE_VERSION} && \
+    make -j $(getconf _NPROCESSORS_ONLN) && \
+    make install && \
+    mkdir /var/lock/nginx && \
+    rm -rf /tmp/build
 
-WORKDIR /
-CMD "nginx"
+# Forward logs to Docker
+RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
+    ln -sf /dev/stderr /var/log/nginx/error.log
+
+# Set up config file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80 1935
+
+STOPSIGNAL SIGTERM
+
+CMD ["nginx", "-g", "daemon off;"]

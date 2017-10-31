@@ -8,7 +8,8 @@ services:
       - VIRTUAL_HOST=hls-streaming-server.com
     ports:
       - 1935:1935
-    restart: always
+    #restart: always
+    tty: true
 
   web-server:
     build: ./web-server/
